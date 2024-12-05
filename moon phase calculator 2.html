@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moon Phase Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        #phase {
+            font-size: 18px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Moon Phase Calculator</h1>
+    <button id="calculateButton">Get Moon Phase</button>
+    <div id="phase"></div>
+
+    <script>
+        // Constants for lunar cycle calculations
+        const SYNODIC_MONTH = 29.530588853; // Mean synodic month in days
+
+        /**
+         * Calculates the approximate phase of the moon as a percentage.
+         *
+         * @param {Date} date The date for which to calculate the moon phase.
+         * @returns {number} The moon phase as a percentage (0.0 - New Moon, 0.5 - Full Moon, 1.0 - New Moon again).
+         */
+        function calculateMoonPhase(date) {
+            // Calculate days since January 1, 1970
+            const millisecondsSinceEpoch = date.getTime();
+            const daysSinceEpoch = millisecondsSinceEpoch / (1000 * 60 * 60 * 24);
+
+            // Calculate lunar cycles since January 1, 1970
+            const lunarCycles = daysSinceEpoch / SYNODIC_MONTH;
+
+            // Calculate fractional part of lunar cycles
+            const fractionalCycle = lunarCycles - Math.floor(lunarCycles);
+
+            // Calculate moon phase percentage
+            return fractionalCycle;
+        }
+
+        /**
+         * Gets a descriptive string for the current moon phase.
+         *
+         * @param {number} phase The moon phase as a percentage (0.0 - 1.0).
+         * @returns {string} A descriptive string for the moon phase.
+         */
+        function getMoonPhaseDescription(phase) {
+            const phases = [
+                "New Moon",
+                "Waxing Crescent",
+                "First Quarter",
+                "Waxing Gibbous",
+                "Full Moon",
+                "Waning Gibbous",
+                "Third Quarter",
+                "Waning Crescent",
+            ];
+
+            const phaseIndex = Math.round(phase * 8) % 8;
+            return phases[phaseIndex];
+        }
+
+        // Function to update the Moon phase display
+        function updateMoonPhase() {
+            const now = new Date();
+            const phase = calculateMoonPhase(now);
+            const description = getMoonPhaseDescription(phase);
+            document.getElementById('phase').innerText = `Current Moon Phase: ${description}`;
+        }
+
+        // Add event listener to the button
+        document.getElementById('calculateButton').addEventListener('click', updateMoonPhase);
+    </script>
+</body>
+</html>
